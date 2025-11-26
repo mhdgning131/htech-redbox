@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div style="margin-bottom: 2rem; border-bottom: 1px solid var(--border-main); padding-bottom: 1rem;">
+    <a href="{{ url_for('index') }}" class="btn" style="padding: 0.5rem 1rem; font-size: 0.7rem;">
+      <i class="fa-solid fa-arrow-left"></i> ABORT_MISSION
+    </a>
+  </div>
+
+  <div class="challenge-layout">
+    <!-- Left Column: Briefing & Terminal -->
+    <div class="main-col">
+      <div class="panel">
+        <div class="panel-header">
+          <h1 style="margin: 0; font-size: 2rem;">{{ meta.title }}</h1>
+          <span class="points-badge mono" style="font-size: 1.2rem;">
+            {% if meta.solved %}
+              <span style="color: var(--success);">[ MISSION_COMPLETE ]</span>
+            {% else %}
+              PTS_{{ meta.points }}
+            {% endif %}
+          </span>
+        </div>
+        
+        <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+          <span class="difficulty-badge difficulty-{{ meta.difficulty }}">{{ meta.difficulty }}</span>
+          <span class="difficulty-badge" style="border-color: var(--text-main); color: var(--text-main);">
+            TYPE: CRYPTO
+          </span>
+        </div>
+
+        <div class="panel-title">MISSION_BRIEFING</div>
+        <div style="color: var(--text-main); line-height: 1.6; font-family: var(--font-tech); font-size: 0.9rem;">
+          {{ meta.description | safe }}
+        </div>
+      </div>
+
+      <!-- Submission Area -->
+      <div class="panel">
+        <div class="panel-title">FLAG_VERIFICATION_PROTOCOL</div>
+        <form method="post" action="{{ url_for('submit', ch_id=meta.id) }}" style="display: flex; gap: 1rem;">
+          <div class="input-group" style="flex: 1;">
+            <div class="input-icon">
+              <i class="fa-solid fa-key"></i>
+            </div>
+            <input type="text" name="flag" placeholder="HTECH{...}" autocomplete="off" />
+          </div>
+          <button type="submit" class="btn btn-primary">
+            EXECUTE
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Right Column: Resources -->
+    <div class="side-col">
+      <div class="panel">
+        <div class="panel-title">INTERCEPTED_DATA</div>
+        <ul class="file-list">
+          {% for f in files %}
+            <li class="file-item">
+              <i class="fa-regular fa-file-code file-icon"></i>
+              <span class="file-name">{{ f }}</span>
+              <a href="{{ url_for('download', ch_id=meta.id, filename=f) }}" class="btn" style="padding: 0.25rem 0.5rem; font-size: 0.7rem;">
+                DL
+              </a>
+            </li>
+          {% else %}
+            <li style="color: var(--text-muted); font-style: italic; padding: 1rem; font-size: 0.8rem;">NO_FILES_DETECTED</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+    </div>
+  </div>
+{% endblock %}

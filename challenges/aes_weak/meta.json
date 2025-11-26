@@ -1,0 +1,9 @@
+{
+  "id": "aes_easy",
+  "title": "AES_CLEAR_KEY",
+  "category": "Cryptographie Symétrique",
+  "difficulty": "Facile",
+  "points": 25,
+  "description": "Falilou (encore Falilou), négligent, a laissé la clé et le vecteur d'initialisation (IV) dans un fichier de configuration accessible à tous.<br><br><strong>Paramètres interceptés :</strong><br><br>Algorithme: <strong>AES-128-CBC</strong><br>Clé (UTF-8): <strong style='color: #ff3300;'>1234567890ABCDEF</strong><br>IV (Hex): <strong style='color: #ff3300;'>00000000000000000000000000000000</strong><br>Ciphertext (Hex): <strong style='color: #ff3300;'>f3e326c273a026adbaced975f77566d4f269c57f3ac8b8db0e8b9e3378b7c80c</strong><br><br><strong>Objectif</strong> : Utilisez un outil en ligne (comme CyberChef) pour déchiffrer le message avec les paramètres fournis.",
+  "flag": "HTECH{AES_1s_eE34AAsy_P3aSy}"
+}

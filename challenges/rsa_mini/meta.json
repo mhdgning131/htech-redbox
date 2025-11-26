@@ -1,0 +1,9 @@
+{
+  "id": "rsa_mini",
+  "title": "RSA_MINI",
+  "category": "Cryptographie Asymétrique",
+  "difficulty": "Moyen",
+  "points": 100,
+  "description": "Daniel et Balla utilisent un système de communication obsolète avec une clé RSA extrêmement faible. Le module N est si petit qu'il peut être factorisé à la main (ou presque).<br><br><strong>Paramètres RSA :</strong><br><br>Module Public (N): <strong style='color: #ff3300;'>3233</strong><br>Exposant Public (e): <strong style='color: #ff3300;'>17</strong><br>Message Chiffré (C): <strong style='color: #ff3300;'>2557</strong><br><br><strong>Objectif</strong> : Factorisez N pour retrouver la clé privée et déchiffrer le message C.",
+  "flag": "HTECH{42}"
+}
