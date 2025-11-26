@@ -33,15 +33,17 @@ def load_challenges():
 
 
 def get_challenge(ch_id):
-    # Search in the hardcoded list
-    for ch in CHALLENGES_DATA:
-        if ch["id"] == ch_id:
-            return ch
-    return None
-
-# def get_challenge_old(ch_id):
-#     # ... old file based code ...
-#     pass
+    folder = os.path.join(CHALLENGES_DIR, ch_id)
+    meta_path = os.path.join(folder, "meta.json")
+    if not os.path.exists(meta_path):
+        return None
+    try:
+        with open(meta_path, "r", encoding="utf-8") as f:
+            meta = json.load(f)
+            meta.setdefault("id", ch_id)
+            return meta
+    except Exception:
+        return None
 
 
 @app.route("/")
