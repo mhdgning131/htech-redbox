@@ -33,17 +33,38 @@ def load_challenges():
 
 
 def get_challenge(ch_id):
+    # 1. Try direct match (fastest)
     folder = os.path.join(CHALLENGES_DIR, ch_id)
-    meta_path = os.path.join(folder, "meta.json")
-    if not os.path.exists(meta_path):
+    if os.path.isdir(folder):
+        meta_path = os.path.join(folder, "meta.json")
+        if os.path.exists(meta_path):
+            try:
+                with open(meta_path, "r", encoding="utf-8") as f:
+                    meta = json.load(f)
+                    # If the ID in the file matches (or isn't set), it's a match
+                    if meta.get("id", ch_id) == ch_id:
+                        return meta
+            except Exception:
+                pass
+
+    # 2. Fallback: Search all folders (handles case mismatch or folder name != ID)
+    if not os.path.isdir(CHALLENGES_DIR):
         return None
-    try:
-        with open(meta_path, "r", encoding="utf-8") as f:
-            meta = json.load(f)
-            meta.setdefault("id", ch_id)
-            return meta
-    except Exception:
-        return None
+        
+    for name in os.listdir(CHALLENGES_DIR):
+        folder = os.path.join(CHALLENGES_DIR, name)
+        if not os.path.isdir(folder): continue
+        
+        meta_path = os.path.join(folder, "meta.json")
+        if os.path.exists(meta_path):
+            try:
+                with open(meta_path, "r", encoding="utf-8") as f:
+                    meta = json.load(f)
+                    if meta.get("id") == ch_id:
+                        return meta
+            except Exception:
+                continue
+    return None
 
 
 @app.route("/")
@@ -69,17 +90,42 @@ def challenge(ch_id):
     meta["solved"] = (ch_id in solved_ids)
 
     files = []
-    folder = os.path.join(CHALLENGES_DIR, ch_id)
-    for f in sorted(os.listdir(folder)):
-        if f == "meta.json":
+    # Find the actual folder name for this challenge ID
+    folder_name = ch_id # Default
+    for name in os.listdir(CHALLENGES_DIR):
+        try:
+            with open(os.path.join(CHALLENGES_DIR, name, "meta.json"), "r", encoding="utf-8") as f:
+                if json.load(f).get("id") == ch_id:
+                    folder_name = name
+                    break
+        except:
             continue
-        files.append(f)
+            
+    folder = os.path.join(CHALLENGES_DIR, folder_name)
+    if os.path.isdir(folder):
+        for f in sorted(os.listdir(folder)):
+            if f == "meta.json":
+                continue
+            files.append(f)
+            
     return render_template("challenge.html", meta=meta, files=files)
 
 
 @app.route("/download/<ch_id>/<path:filename>")
 def download(ch_id, filename):
-    folder = os.path.join(CHALLENGES_DIR, ch_id)
+    # Find the actual folder name for this challenge ID
+    folder_name = ch_id # Default
+    if os.path.isdir(CHALLENGES_DIR):
+        for name in os.listdir(CHALLENGES_DIR):
+            try:
+                with open(os.path.join(CHALLENGES_DIR, name, "meta.json"), "r", encoding="utf-8") as f:
+                    if json.load(f).get("id") == ch_id:
+                        folder_name = name
+                        break
+            except:
+                continue
+
+    folder = os.path.join(CHALLENGES_DIR, folder_name)
     return send_from_directory(folder, filename, as_attachment=True)
 
 
@@ -110,7 +156,7 @@ def submit(ch_id):
 
 @app.route("/archives")
 def archives():
-    return render_template("archives.html")
+    return render_template("archives.html") 
 
 
 @app.route("/operator")
