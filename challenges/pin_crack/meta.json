@@ -1,0 +1,10 @@
+{
+  "id": "pin_crack",
+  "title": "PIN_CRACKER",
+  "category": "Hashing",
+  "difficulty": "Facile",
+  "points": 50,
+  "description": "Nous avons extrait le hash d'un code PIN à 4 chiffres d'une base de données compromise. Le hash est salé pour empêcher les attaques par Rainbow Table, mais l'espace de recherche est minuscule.<br><br><strong>Données extraites :</strong><br><br>Salt (Hex): <strong style='color: #ff3300;'>71475423dcd33669</strong><br>Hash (SHA-256): <strong style='color: #ff3300;'>aac4a8294bf0c218f53b33e7e673153187ea1f320adc6ab48ab6aac2a1d25e06</strong><br><br><strong>Objectif</strong> : Retrouvez le code PIN à 4 chiffres.",
+  "flag": "HTECH{1337}",
+  "hint": "Espace de recherche : 0000 à 9999. Formule : SHA256(salt + PIN)."
+}

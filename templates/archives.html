@@ -1,0 +1,441 @@
+{% extends 'base.html' %}
+
+{% block container_class %}container-full{% endblock %}
+
+{% block content %}
+  <div style="margin-bottom: 2rem; border-bottom: 1px solid var(--border-main); padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: flex-end;">
+    <div>
+      <h1 style="font-size: 3rem; margin-bottom: 0; line-height: 1;">ARCHIVES</h1>
+      <p class="mono" style="color: var(--text-muted); margin-top: 0.5rem;">
+        // KNOWLEDGE_BASE // PROTOCOLS_AND_ALGORITHMS
+      </p>
+    </div>
+  </div>
+
+  <div class="archive-grid">
+
+    <!-- 03. AES (Priority High) -->
+    <div class="archive-card span-2 row-2">
+      <div class="archive-header">
+        <h2 class="archive-title">
+          AES
+          <span class="archive-type">SYMÉTRIQUE // STANDARD</span>
+        </h2>
+      </div>
+      <div class="archive-body">
+        <p>
+          L'<strong>Advanced Encryption Standard (AES)</strong> est un algorithme de chiffrement par blocs. Il ne chiffre pas tout le fichier d'un coup, mais le découpe en petits morceaux de <strong>128 bits</strong> (16 octets).
+          <br><br>
+          <strong>La mécanique :</strong>
+          <ul style="margin-top: 5px; margin-bottom: 10px; padding-left: 20px; list-style-type: disc;">
+            <li><strong>Message long :</strong> Il est découpé en série de blocs. Ils sont chaînés entre eux (via des modes comme CBC ou GCM) pour renforcer la sécurité.</li>
+            <li><strong>Message court :</strong> Si le dernier bloc n'est pas plein, on comble le vide avec des données neutres pour atteindre 128 bits. C'est le <strong>Padding</strong>.</li>
+          </ul>
+          Ensuite, chaque bloc traverse un <strong>réseau de substitution-permutation (SPN)</strong> qui mélange les données à chaque "tour".
+        </p>
+        <div class="archive-diagram" style="min-height: 200px; display: flex; align-items: center; justify-content: center;">
+          $$
+          \begin{array}{c}
+          \text{Fichier complet} \rightarrow \text{[Bloc 1][Bloc 2][Bloc 3]...} \\
+          \downarrow \\
+          \text{Traitement d'un Bloc (128 bits):} \\
+          \downarrow \\
+          \text{[ Ajout de la Clé Initiale ]} \\
+          \downarrow \\
+          \text{Répéter } N \text{ fois (Rounds):} \\
+          \left\{ \begin{array}{l}
+          \text{1. Substitution (S-Box)} \\
+          \text{2. Permutation des lignes} \\
+          \text{3. Mélange des colonnes} \\
+          \text{4. Addition de la clé de tour}
+          \end{array} \right\} \\
+          \downarrow \\
+          \text{Sortie: Bloc Chiffré}
+          \end{array}
+          $$
+        </div>
+        <p>
+          <strong>Sécurité :</strong> Considéré comme incassable (AES-256). Utilisé par : WPA2, HTTPS, VPN, Banques.
+        </p>
+      </div>
+      <div class="archive-footer">
+        // STATUS: SECURE
+      </div>
+    </div>
+
+    <!-- 04. RSA (Priority High) -->
+    <div class="archive-card span-2 row-2">
+      <div class="archive-header">
+        <h2 class="archive-title">
+          RSA
+          <span class="archive-type">ASYMÉTRIQUE // PKI</span>
+        </h2>
+      </div>
+      <div class="archive-body">
+        <p>
+          <strong>RSA</strong> repose sur l'asymétrie mathématique : il est très facile de multiplier deux grands nombres premiers, mais extrêmement difficile de retrouver ces nombres à partir du résultat (factorisation). La clé publique (utilisée pour chiffrer) est dérivée du produit, tandis que la clé privée (pour déchiffrer) nécessite de connaître les facteurs originaux. C'est une <strong>fonction à sens unique avec trappe</strong>.
+        </p>
+        <div class="archive-diagram" style="min-height: 200px; display: flex; align-items: center; justify-content: center;">
+          $$
+          \begin{aligned}
+          &\textbf{1. Création des clés} \\
+          &\quad \text{Choisir } p, q \text{ (nombres premiers)} \\
+          &\quad n = p \times q \quad \text{(Module public)} \\
+          &\quad \text{Clé Publique } = (e, n) \\
+          &\quad \text{Clé Privée } = (d, n) \\
+          \\
+          &\textbf{2. Chiffrement (Public)} \\
+          &\quad \text{Message } M \xrightarrow{M^e \pmod n} \text{Chiffré } C \\
+          \\
+          &\textbf{3. Déchiffrement (Privé)} \\
+          &\quad \text{Chiffré } C \xrightarrow{C^d \pmod n} \text{Message } M
+          \end{aligned}
+          $$
+        </div>
+        <p>
+          <strong>Utilisation :</strong> Échange de clés, Signatures numériques. Lent pour les gros volumes de données.
+        </p>
+      </div>
+      <div class="archive-footer">
+        // STATUS: SECURE (KEY > 2048)
+      </div>
+    </div>
+
+    <!-- 05. DIFFIE-HELLMAN -->
+    <div class="archive-card span-2">
+      <div class="archive-header">
+        <h2 class="archive-title">
+          DIFFIE-HELLMAN
+          <span class="archive-type">ÉCHANGE DE CLÉS</span>
+        </h2>
+      </div>
+      <div class="archive-body">
+        <p>
+          Le protocole <strong>Diffie-Hellman</strong> permet à deux parties d'établir une clé secrète commune sur un canal non sécurisé, sans jamais transmettre la clé elle-même. Il utilise l'arithmétique modulaire : chaque partie combine sa clé privée avec des données publiques, échange le résultat, et combine ce qu'elle reçoit avec sa propre clé privée. Grâce aux propriétés des puissances modulaires, les deux parties arrivent au même résultat mathématique final, invisible pour un observateur.
+        </p>
+        <div class="archive-diagram">
+          $$
+          \begin{array}{ccc}
+          \text{Alice} & \text{Public} & \text{Bob} \\
+          \text{Secret: } a & g, p & \text{Secret: } b \\
+          \downarrow & & \downarrow \\
+          A = g^a \pmod p & \xrightarrow{A} & \\
+          & \xleftarrow{B} & B = g^b \pmod p \\
+          \downarrow & & \downarrow \\
+          S = B^a \pmod p & \text{=} & S = A^b \pmod p
+          \end{array}
+          $$
+        </div>
+        <p>
+          <strong>Analogie :</strong> Mélange de peintures. Impossible de séparer les couleurs une fois mélangées.
+        </p>
+      </div>
+      <div class="archive-footer">
+        // STATUS: STANDARD
+      </div>
+    </div>
+
+    <!-- 06. HACHAGE -->
+    <div class="archive-card span-2">
+      <div class="archive-header">
+        <h2 class="archive-title">
+          SHA-256
+          <span class="archive-type">HACHAGE // INTEGRITY</span>
+        </h2>
+      </div>
+      <div class="archive-body">
+        <p>
+          <strong>SHA-256</strong> (Secure Hash Algorithm) est une fonction de hachage cryptographique. Elle transforme n'importe quelle entrée (texte, fichier) en une chaîne fixe de 256 bits. Elle est conçue pour être <strong>irréversible</strong> (on ne peut pas retrouver le fichier original) et <strong>résistante aux collisions</strong> (deux fichiers différents ne doivent jamais donner le même hash). Un changement d'un seul bit dans l'entrée modifie radicalement la sortie (effet d'avalanche).
+        </p>
+        <div class="archive-diagram">
+          $$
+          \begin{aligned}
+          \text{"Data"} &\xrightarrow{\text{SHA-256}} \texttt{3a5f8dda52087883c...} \\
+          \text{"Date"} &\xrightarrow{\text{SHA-256}} \texttt{9b2c57a8a443e"7b5...}
+          \end{aligned}
+          $$
+        </div>
+        <p>
+          Utilisé pour vérifier l'intégrité des fichiers et stocker les mots de passe.
+        </p>
+      </div>
+      <div class="archive-footer">
+        // STATUS: STANDARD
+      </div>
+    </div>
+
+    <!-- 01. CESAR -->
+    <div class="archive-card span-2">
+      <div class="archive-header">
+        <h2 class="archive-title">
+          CÉSAR
+          <span class="archive-type">SUBSTITUTION // HISTORIC</span>
+        </h2>
+      </div>
+      <div class="archive-body">
+        <p>
+          Le <strong>Chiffre de César</strong> est une substitution monoalphabétique simple. Chaque lettre du message est décalée d'un nombre fixe de positions dans l'alphabet (la clé). Bien qu'historique, il illustre le concept de base de la cryptographie : transformer un message clair en message chiffré via un algorithme et une clé. Sa simplicité est sa faiblesse : avec seulement 25 décalages possibles, il est trivial à casser par force brute.
+        </p>
+        <div class="archive-diagram">
+          $$
+          \begin{aligned}
+          \text{Alphabet:} \quad & A \ B \ C \ D \ E \ F \dots \\
+          \text{Décalage (+3):} \quad & \downarrow \ \downarrow \ \downarrow \ \downarrow \ \downarrow \ \downarrow \\
+          \text{Chiffré:} \quad & D \ E \ F \ G \ H \ I \dots \\
+          \\
+          \text{Exemple:} \quad & \text{"BAC"} \rightarrow \text{"EDF"}
+          \end{aligned}
+          $$
+        </div>
+        <p>
+          <strong>Faiblesse :</strong> 25 clés possibles. Cassé instantanément.
+        </p>
+      </div>
+      <div class="archive-footer">
+        // STATUS: OBSOLETE
+      </div>
+    </div>
+
+    <!-- 02. VIGENERE -->
+    <div class="archive-card span-2">
+      <div class="archive-header">
+        <h2 class="archive-title">
+          VIGENÈRE
+          <span class="archive-type">POLYALPHABÉTIQUE</span>
+        </h2>
+      </div>
+      <div class="archive-body">
+        <p>
+          Le <strong>Chiffre de Vigenère</strong> est une amélioration du chiffre de César. Au lieu d'un décalage unique pour tout le texte, il utilise une <strong>clé</strong> (un mot) pour changer le décalage à chaque lettre. La première lettre est décalée selon la première lettre de la clé, la seconde selon la seconde, etc. Cela lisse les fréquences des lettres (le 'E' n'est plus toujours chiffré pareil), rendant l'analyse fréquentielle classique inefficace.
+        </p>
+        <div class="archive-diagram">
+          $$
+          \begin{aligned}
+          \text{Message:} & \quad P \quad A \quad R \quad I \quad S \\
+          \text{Clé:} & \quad C \quad L \quad E \quad C \quad L \\
+          \text{Addition:} & \quad \downarrow \quad \downarrow \quad \downarrow \quad \downarrow \quad \downarrow \\
+          \text{Résultat:} & \quad R \quad L \quad V \quad K \quad D
+          \end{aligned}
+          $$
+        </div>
+        <p>
+          <strong>Faiblesse :</strong> Analyse de Kasiski (répétitions).
+        </p>
+      </div>
+      <div class="archive-footer">
+        // STATUS: COMPROMISED
+      </div>
+    </div>
+
+    <!-- 07. XOR -->
+    <div class="archive-card span-2">
+      <div class="archive-header">
+        <h2 class="archive-title">
+          XOR
+          <span class="archive-type">OPÉRATION LOGIQUE // FONDAMENTAL</span>
+        </h2>
+      </div>
+      <div class="archive-body">
+        <p>
+          Le <strong>OU Exclusif (XOR)</strong> est l'opération reine de la cryptographie moderne. Sa propriété magique est sa réversibilité : si vous faites $A \oplus B = C$, alors $C \oplus B = A$. C'est la base du "Masque Jetable" (One-Time Pad), le seul chiffrement mathématiquement inviolable si la clé est aléatoire et aussi longue que le message. C'est aussi l'opération de base dans AES et les chiffrements de flux.
+        </p>
+        <div class="archive-diagram">
+          $$
+          \begin{array}{c}
+          \text{Table de Vérité:} \\
+          0 \oplus 0 = 0 \quad | \quad 0 \oplus 1 = 1 \\
+          1 \oplus 0 = 1 \quad | \quad 1 \oplus 1 = 0 \\
+          \\
+          \text{Exemple (Bits):} \\
+          \begin{array}{r}
+          10110 \text{ (Message)} \\
+          \oplus \ 11010 \text{ (Clé)} \\
+          \hline
+          01100 \text{ (Chiffré)}
+          \end{array}
+          \end{array}
+          $$
+        </div>
+        <p>
+          <strong>Propriété :</strong> $M \oplus K \oplus K = M$. Appliquer la clé deux fois annule l'opération.
+        </p>
+      </div>
+      <div class="archive-footer">
+        // STATUS: ESSENTIAL
+      </div>
+    </div>
+
+    <!-- 08. SIGNATURE NUMÉRIQUE -->
+    <div class="archive-card span-2">
+      <div class="archive-header">
+        <h2 class="archive-title">
+          SIGNATURE
+          <span class="archive-type">AUTHENTIFICATION // NON-RÉPUDIATION</span>
+        </h2>
+      </div>
+      <div class="archive-body">
+        <p>
+          La <strong>Signature Numérique</strong> est l'inverse du chiffrement asymétrique. Au lieu de chiffrer avec la clé publique, l'émetteur "signe" un hash du message avec sa <strong>clé privée</strong>. Tout le monde peut vérifier la signature avec la clé publique de l'émetteur. Cela garantit trois choses : <strong>Authenticité</strong> (ça vient bien de lui), <strong>Intégrité</strong> (le message n'a pas changé), et <strong>Non-répudiation</strong> (il ne peut pas nier l'avoir envoyé).
+        </p>
+        <div class="archive-diagram">
+          $$
+          \begin{array}{l}
+          \textbf{Signer (Alice):} \\
+          \text{Hash(Msg)} \xrightarrow{\text{Clé Privée}} \text{Signature} \\
+          \\
+          \textbf{Vérifier (Bob):} \\
+          \text{Signature} \xrightarrow{\text{Clé Publique}} \text{Hash1} \\
+          \text{Hash(Msg Reçu)} \rightarrow \text{Hash2} \\
+          \\
+          \text{Si } \text{Hash1} == \text{Hash2} \implies \text{Valide !}
+          \end{array}
+          $$
+        </div>
+        <p>
+          <strong>Usage :</strong> Certificats SSL/TLS, Mises à jour logicielles, Transactions Bitcoin.
+        </p>
+      </div>
+      <div class="archive-footer">
+        // STATUS: CRITICAL
+      </div>
+    </div>
+
+    <!-- 09. ZKP -->
+    <div class="archive-card span-2">
+      <div class="archive-header">
+        <h2 class="archive-title">
+          ZKP
+          <span class="archive-type">PROTOCOLE // PRIVACY</span>
+        </h2>
+      </div>
+      <div class="archive-body">
+        <p>
+          La <strong>Preuve à Divulgation Nulle (Zero-Knowledge Proof)</strong> est une méthode cryptographique révolutionnaire. Elle permet à une partie (le Prouveur) de prouver à une autre (le Vérifieur) qu'elle connaît un secret $x$, sans jamais révéler $x$ ni aucune information à son sujet. C'est comme prouver que vous avez la clé d'une porte sans jamais montrer la clé, simplement en ouvrant la porte et en passant au travers.
+        </p>
+        <div class="archive-diagram">
+          $$
+          \begin{array}{c}
+          \textbf{Prouveur (P)} \xrightarrow{\text{Engagement}} \textbf{Vérifieur (V)} \\
+          \text{(Je m'engage sur une valeur masquée)} \\
+          \\
+          \textbf{Prouveur (P)} \xleftarrow{\text{Défi (Challenge)}} \textbf{Vérifieur (V)} \\
+          \text{(V demande une preuve aléatoire)} \\
+          \\
+          \textbf{Prouveur (P)} \xrightarrow{\text{Réponse}} \textbf{Vérifieur (V)} \\
+          \text{(P répond grâce au secret)} \\
+          \\
+          \text{Vérification: } \text{Si P ne connaît pas le secret,} \\
+          \text{il a } 50\% \text{ de chance d'échouer à chaque tour.}
+          \end{array}
+          $$
+        </div>
+        <p>
+          <strong>Usage :</strong> Authentification sans mot de passe, Monnaies anonymes (Zcash), Vote électronique.
+        </p>
+      </div>
+      <div class="archive-footer">
+        // STATUS: ADVANCED
+      </div>
+    </div>
+
+    <!-- 10. ENCODING -->
+    <div class="archive-card span-2">
+      <div class="archive-header">
+        <h2 class="archive-title">
+          ENCODING
+          <span class="archive-type">REPRÉSENTATION // NOT_CRYPTO</span>
+        </h2>
+      </div>
+      <div class="archive-body">
+        <p>
+          L'<strong>Encodage</strong> (Base64, Hex, ASCII) est souvent confondu avec le chiffrement, mais il ne protège rien. Son but est de <strong>traduire</strong> des données binaires (images, exécutables) en caractères imprimables pour le transport (emails, URL). Il n'y a pas de clé : n'importe qui connaissant le standard peut décoder le message.
+        </p>
+        <div class="archive-diagram">
+          $$
+          \begin{array}{l}
+          \textbf{Base64:} \\
+          \text{Binaire: } 01001101 \ 01100001 \ 01101110 \\
+          \downarrow \text{ (Groupes de 6 bits)} \\
+          \text{Index: } 19 \ 22 \ 5 \ 46 \\
+          \downarrow \text{ (Table Base64)} \\
+          \text{Texte: } \texttt{T W F u}
+          \end{array}
+          $$
+        </div>
+        <p>
+          <strong>Usage :</strong> Transmettre des données binaires via du texte. Ne jamais utiliser pour cacher des secrets.
+        </p>
+      </div>
+      <div class="archive-footer">
+        // STATUS: UTILITY
+      </div>
+    </div>
+
+    <!-- 11. SALT -->
+    <div class="archive-card span-2">
+      <div class="archive-header">
+        <h2 class="archive-title">
+          SALT
+          <span class="archive-type">HACHAGE // SÉCURITÉ</span>
+        </h2>
+      </div>
+      <div class="archive-body">
+        <p>
+          Le <strong>Salt</strong> (sel) est une donnée aléatoire ajoutée à un mot de passe avant son hachage. Son but est de contrer les attaques par <strong>Rainbow Tables</strong> (tables de hash pré-calculées). Sans sel, deux utilisateurs ayant le même mot de passe auraient le même hash, ce qui est une faille critique. Avec le sel, chaque hash est unique même pour des mots de passe identiques.
+        </p>
+        <div class="archive-diagram">
+          $$
+          \begin{aligned}
+          \text{Utilisateur A:} & \quad \text{Pass="123456"} + \text{Salt="X9z"} \rightarrow \text{Hash A} \\
+          \text{Utilisateur B:} & \quad \text{Pass="123456"} + \text{Salt="B2a"} \rightarrow \text{Hash B} \\
+          \\
+          \text{Résultat:} & \quad \text{Hash A } \neq \text{Hash B}
+          \end{aligned}
+          $$
+        </div>
+        <p>
+          <strong>Règle :</strong> Toujours utiliser un sel unique par utilisateur.
+        </p>
+      </div>
+      <div class="archive-footer">
+        // STATUS: BEST PRACTICE
+      </div>
+    </div>
+
+    <!-- 12. KPA (Known Plaintext Attack) -->
+    <div class="archive-card span-2">
+      <div class="archive-header">
+        <h2 class="archive-title">
+          KPA
+          <span class="archive-type">ATTAQUE // CRYPTANALYSE</span>
+        </h2>
+      </div>
+      <div class="archive-body">
+        <p>
+          L'attaque à <strong>Texte Clair Connu (Known Plaintext Attack - KPA)</strong> survient lorsque l'attaquant possède à la fois un message chiffré et une partie de sa version déchiffrée (le "crib"). Cela permet souvent de déduire la clé ou de casser le reste du message. C'est particulièrement dévastateur pour les chiffrements de flux ou XOR si la clé est réutilisée.
+        </p>
+        <div class="archive-diagram">
+          $$
+          \begin{array}{l}
+          \text{On a:} \\
+          C = M \oplus K \quad (\text{Chiffré}) \\
+          M_{known} \quad (\text{Partie connue, ex: "HTECH\{"}) \\
+          \\
+          \text{Attaque:} \\
+          K_{partiel} = C \oplus M_{known} \\
+          \\
+          \text{Si la clé se répète, on déchiffre tout !}
+          \end{array}
+          $$
+        </div>
+        <p>
+          <strong>Défense :</strong> Ne jamais réutiliser une clé (One-Time Pad) ou utiliser des modes sécurisés (AES-GCM).
+        </p>
+      </div>
+      <div class="archive-footer">
+        // STATUS: DANGER
+      </div>
+    </div>
+
+  </div>
+{% endblock %}

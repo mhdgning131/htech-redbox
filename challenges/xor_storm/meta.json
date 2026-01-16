@@ -1,0 +1,9 @@
+{
+    "id": "xor_storm",
+    "title": "XOR_STORM",
+    "category": "Cryptographie Symétrique",
+    "difficulty": "Facile",
+    "points": 50,
+    "description": "Une transmission cryptée a été interceptée sur le canal d'urgence. L'algorithme identifié est un XOR à clé répétée. La clé semble être un mot très court de 3 lettres.<br><br>Message (Hex) : <strong style='color: #ff3300;'>23673c287b02337c2b345a0a34550c054e</strong><br><br><strong>Objectif</strong> : Le message commence par 'HTECH{'. Utilisez cette information pour déduire la clé (Known Plaintext Attack).",
+    "flag": "HTECH{XOR_is_fun}"
+}

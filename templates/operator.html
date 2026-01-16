@@ -1,0 +1,423 @@
+{% extends 'base.html' %}
+
+{% block container_class %}container-full{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 2rem; border-bottom: 1px solid var(--border-main); padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: flex-end;">
+    <div>
+      <h1 class="glitch-text" data-text="FIELD_OPERATIONS" style="font-size: 3rem; margin-bottom: 0; line-height: 1;">FIELD_OPERATIONS</h1>
+      <p class="mono" style="color: var(--text-muted); margin-top: 0.5rem;">
+        // DECRYPTION_SUITE // ACTIVE_TOOLS
+      </p>
+    </div>
+</div>
+
+<div class="archive-grid">
+    
+    <!-- TOOL 01: TRANSCODER -->
+    <div class="archive-card span-2 row-2">
+        <div class="archive-header">
+            <h2 class="archive-title">
+                TRANSCODER_V1
+                <span class="archive-type">ENCODING // UTILS</span>
+            </h2>
+        </div>
+        <div class="archive-body" style="display: flex; flex-direction: column; height: 100%;">
+            <p style="margin-bottom: 1rem;">Convertisseur universel pour les formats d'encodage standards.</p>
+            
+            <div class="tool-interface" style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
+                <textarea id="transcoder-input" class="terminal-input" placeholder="> INPUT_DATA..."></textarea>
+                
+                <div class="tool-controls" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 5px;">
+                    <button onclick="convert('toBase64')" class="btn-small">To B64</button>
+                    <button onclick="convert('fromBase64')" class="btn-small">From B64</button>
+                    <button onclick="convert('toHex')" class="btn-small">To Hex</button>
+                    <button onclick="convert('fromHex')" class="btn-small">From Hex</button>
+                    <button onclick="convert('rot13')" class="btn-small">ROT13</button>
+                </div>
+
+                <textarea id="transcoder-output" class="terminal-input" readonly placeholder="> OUTPUT_DATA..."></textarea>
+            </div>
+        </div>
+        <div class="archive-footer">
+            // STATUS: READY
+        </div>
+    </div>
+
+    <!-- TOOL 02: VIGENERE STATION -->
+    <div class="archive-card span-2">
+        <div class="archive-header">
+            <h2 class="archive-title">
+                VIGENÈRE_STATION
+                <span class="archive-type">CIPHER // POLYALPHABETIC</span>
+            </h2>
+        </div>
+        <div class="archive-body">
+            <p style="margin-bottom: 1rem;">Déchiffrement polyalphabétique assisté.</p>
+            
+            <div class="tool-interface" style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="text" id="vig-key" class="terminal-input-line" placeholder="> KEY_INPUT">
+                <textarea id="vig-input" class="terminal-input" style="min-height: 60px;" placeholder="> CIPHERTEXT..."></textarea>
+                <div class="tool-controls" style="display: flex; gap: 5px;">
+                    <button onclick="vigenere(false)" class="btn-small action-btn" style="flex: 1;">DÉCHIFFRER</button>
+                    <button onclick="vigenere(true)" class="btn-small" style="flex: 1;">CHIFFRER</button>
+                </div>
+                <div id="vig-result" class="terminal-output"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOOL 03: BRUTEFORCE STATION -->
+    <div class="archive-card span-2">
+        <div class="archive-header">
+            <h2 class="archive-title">
+                BRUTEFORCE_UNIT
+                <span class="archive-type">ATTACK // SHIFT</span>
+            </h2>
+        </div>
+        <div class="archive-body" style="display: flex; flex-direction: column; height: 100%;">
+            <p style="margin-bottom: 1rem;">Test automatique de tous les décalages (César).</p>
+            <textarea id="brute-input" class="terminal-input" style="min-height: 60px; margin-bottom: 10px;" placeholder="> CIPHERTEXT_TO_CRACK..." oninput="bruteforce()"></textarea>
+            
+            <div class="results-wrapper">
+                <div class="gradient-overlay top"></div>
+                <div id="brute-results" class="results-list">
+                    <div class="result-placeholder">// WAITING_FOR_INPUT...</div>
+                </div>
+                <div class="gradient-overlay bottom"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    /* Styles spécifiques à l'opérateur */
+    .terminal-input { 
+        background: rgba(0,0,0,0.5); 
+        border: 1px solid var(--border-main); 
+        color: var(--text-main); 
+        font-family: 'Space Mono', monospace; 
+        padding: 10px; 
+        width: 100%; 
+        resize: vertical;
+        font-size: 0.9rem;
+    }
+    .terminal-input:focus {
+        outline: none;
+        border-color: var(--accent-color);
+    }
+
+    .terminal-input-line {
+        background: rgba(0,0,0,0.5); 
+        border: 1px solid var(--border-main); 
+        color: var(--accent-color); 
+        font-family: 'Space Mono', monospace; 
+        padding: 8px; 
+        width: 100%;
+        font-weight: bold;
+    }
+    .terminal-input-line:focus {
+        outline: none;
+        border-color: var(--accent-color);
+    }
+
+    .btn-small {
+        background: transparent; 
+        border: 1px solid var(--border-main); 
+        color: var(--text-muted); 
+        padding: 8px 10px; 
+        cursor: pointer; 
+        font-family: 'Space Mono'; 
+        font-size: 0.75rem; 
+        text-transform: uppercase;
+        transition: all 0.2s;
+    }
+    .btn-small:hover { 
+        background: var(--text-main); 
+        color: #000; 
+    }
+    .action-btn {
+        border-color: var(--accent-color);
+        color: var(--accent-color);
+    }
+    .action-btn:hover {
+        background: var(--accent-color);
+        color: #000;
+    }
+
+    .terminal-output { 
+        margin-top: 5px; 
+        padding: 10px; 
+        border-left: 2px solid var(--accent-color); 
+        background: rgba(255, 51, 0, 0.05); 
+        color: var(--text-main); 
+        font-family: 'Space Mono'; 
+        word-break: break-all;
+        min-height: 40px;
+    }
+    
+    /* Brute Force Results */
+    .results-wrapper {
+        position: relative;
+        flex: 1;
+        min-height: 150px;
+        background: rgba(0,0,0,0.2);
+        border: 1px solid var(--border-main);
+        overflow: hidden;
+    }
+    .results-list {
+        height: 100%;
+        max-height: 200px; /* Fixed height for scrolling */
+        overflow-y: auto;
+        padding: 15px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent-color) transparent;
+    }
+    .result-item {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border-light);
+    }
+    .result-item:last-child { border-bottom: none; }
+    
+    .result-meta {
+        font-size: 0.7rem;
+        color: var(--accent-color);
+        font-weight: bold;
+        margin-bottom: 2px;
+        display: flex;
+        justify-content: space-between;
+    }
+    .result-score { opacity: 0.7; }
+    
+    .result-text {
+        font-family: 'Space Mono';
+        font-size: 0.85rem;
+        color: var(--text-main);
+        word-break: break-all;
+        line-height: 1.4;
+    }
+    
+    .gradient-overlay {
+        position: absolute;
+        left: 0; right: 0;
+        height: 40px;
+        pointer-events: none;
+        z-index: 2;
+    }
+    .gradient-overlay.top {
+        top: 0;
+        background: linear-gradient(to bottom, var(--bg-panel), transparent);
+    }
+    .gradient-overlay.bottom {
+        bottom: 0;
+        background: linear-gradient(to top, var(--bg-panel), transparent);
+    }
+    .result-placeholder {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        text-align: center;
+        margin-top: 40px;
+        font-style: italic;
+    }
+
+    /* Glitch Effect (Reused) */
+    .glitch-text {
+        position: relative;
+    }
+    /* ... (Glitch keyframes omitted for brevity as they are likely in style.css or can be simplified) ... */
+</style>
+
+<script>
+    // ...existing code...
+    // --- TRANSCODER LOGIC ---
+    function convert(type) {
+        const input = document.getElementById('transcoder-input').value;
+        let output = "";
+        try {
+            if(type === 'toBase64') output = btoa(input);
+            if(type === 'fromBase64') output = atob(input);
+            if(type === 'toHex') {
+                for (let i = 0; i < input.length; i++) {
+                    output += input.charCodeAt(i).toString(16).padStart(2, '0');
+                }
+            }
+            if(type === 'fromHex') {
+                const hex = input.toString().replace(/\s+/g, '');
+                for (let i = 0; i < hex.length; i += 2) {
+                    output += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+                }
+            }
+            if(type === 'rot13') {
+                output = input.replace(/[a-zA-Z]/g, function (c) {
+                    return String.fromCharCode((c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
+                });
+            }
+        } catch (e) {
+            output = "ERROR: INVALID_INPUT_FORMAT";
+        }
+        document.getElementById('transcoder-output').value = output;
+    }
+
+    // --- VIGENERE LOGIC ---
+    function vigenere(isEncrypt) {
+        const text = document.getElementById('vig-input').value; // Keep original case
+        const key = document.getElementById('vig-key').value.toUpperCase().replace(/[^A-Z]/g, '');
+        let result = "";
+        
+        if(!key) { document.getElementById('vig-result').innerText = "ERROR: MISSING_KEY"; return; }
+
+        for(let i = 0, j = 0; i < text.length; i++) {
+            const c = text.charCodeAt(i);
+            
+            // Uppercase
+            if(c >= 65 && c <= 90) {
+                const k = key.charCodeAt(j % key.length) - 65;
+                const shift = isEncrypt ? k : -k;
+                result += String.fromCharCode(((c - 65 + shift + 26) % 26) + 65);
+                j++;
+            }
+            // Lowercase
+            else if(c >= 97 && c <= 122) {
+                const k = key.charCodeAt(j % key.length) - 65; // Key is always uppercase
+                const shift = isEncrypt ? k : -k;
+                result += String.fromCharCode(((c - 97 + shift + 26) % 26) + 97);
+                j++;
+            }
+            // Non-alphabetic
+            else {
+                result += text.charAt(i);
+            }
+        }
+        document.getElementById('vig-result').innerText = result;
+    }
+
+    // --- BRUTEFORCE LOGIC (ENTERPRISE GRADE V4) ---
+    // Moteur de Cryptanalyse Avancé
+    // 1. Test du Chi-Carré (Analyse de distribution statistique)
+    // 2. Analyse N-Grammes Pondérée (Bigrammes)
+    // 3. Vecteur d'Attaque par Dictionnaire (Mots courants/Stopwords)
+    
+    const FREQ_FRENCH = {
+        'E': 12.10, 'A': 7.11, 'I': 6.59, 'S': 6.51, 'N': 6.39, 'R': 6.07, 'T': 5.92, 'O': 5.02, 
+        'L': 4.96, 'U': 4.49, 'D': 3.67, 'C': 3.18, 'M': 2.62, 'P': 2.49, 'G': 1.23, 'B': 1.14, 
+        'V': 1.11, 'H': 1.11, 'F': 1.11, 'Q': 0.65, 'Y': 0.46, 'X': 0.38, 'J': 0.34, 'K': 0.29, 
+        'W': 0.17, 'Z': 0.15
+    };
+
+    const COMMON_WORDS = new Set([
+        'LE', 'LA', 'LES', 'DE', 'DES', 'DU', 'UN', 'UNE', 'ET', 'EST', 'EN', 'QUE', 'QUI', 
+        'DANS', 'POUR', 'SUR', 'PAR', 'PLUS', 'PAS', 'AVEC', 'SON', 'SES', 'CES', 'MAIS', 
+        'NOUS', 'VOUS', 'ILS', 'ELLES', 'FAIT', 'TOUT', 'CETTE', 'COMME', 'ELLE', 'BIEN',
+        'CETTE', 'DONT', 'MON', 'TON', 'NOTRE', 'VOTRE', 'LEUR', 'AUX', 'CAR', 'DONC'
+    ]);
+
+    const BIGRAMS_WEIGHTS = {
+        'ES': 3.1, 'DE': 2.6, 'LE': 2.3, 'EN': 2.3, 'RE': 2.1, 'NT': 2.0, 'ON': 1.6, 'ER': 1.6,
+        'TE': 1.5, 'EL': 1.4, 'AN': 1.4, 'SE': 1.4, 'ET': 1.3, 'LA': 1.3, 'AI': 1.2, 'IT': 1.2,
+        'ME': 1.2, 'OU': 1.1, 'EM': 1.1, 'IE': 1.1, 'QU': 1.0
+    };
+
+    function calculateChiSquared(text) {
+        const counts = {};
+        let total = 0;
+        
+        for (let char of text) {
+            if (/[A-Z]/.test(char)) {
+                counts[char] = (counts[char] || 0) + 1;
+                total++;
+            }
+        }
+        
+        if (total === 0) return 1000; 
+
+        let chi2 = 0;
+        for (let char in FREQ_FRENCH) {
+            const observed = counts[char] || 0;
+            const expected = (FREQ_FRENCH[char] / 100) * total;
+            if (expected > 0) {
+                chi2 += Math.pow(observed - expected, 2) / expected;
+            }
+        }
+        
+        return chi2;
+    }
+
+    function getScore(text) {
+        const upperText = text.toUpperCase();
+        
+        // 1. Chi-Squared (Plus c'est bas, mieux c'est)
+        // On inverse pour le score : 2000 - Chi2
+        const chi2 = calculateChiSquared(upperText);
+        let score = 2000 - chi2; 
+
+        // 2. Bonus Mots du Dictionnaire (Le facteur humain)
+        const words = upperText.split(/[^A-Z]+/);
+        for(let word of words) {
+            if(word.length > 1 && COMMON_WORDS.has(word)) {
+                score += 300; // Bonus massif pour mot réel
+            }
+        }
+
+        // 3. Analyse Bigrammes (Lissage)
+        for(let i = 0; i < upperText.length - 1; i++) {
+            const bigram = upperText.substring(i, i+2);
+            if(BIGRAMS_WEIGHTS[bigram]) {
+                score += BIGRAMS_WEIGHTS[bigram] * 10;
+            }
+        }
+        
+        return score;
+    }
+
+    function bruteforce() {
+        const input = document.getElementById('brute-input').value;
+        const container = document.getElementById('brute-results');
+        
+        if(!input) {
+            container.innerHTML = '<div class="result-placeholder">// WAITING_FOR_INPUT...</div>';
+            return;
+        }
+
+        const results = [];
+        for(let shift=1; shift<26; shift++) {
+            let decrypted = "";
+            for(let i=0; i<input.length; i++) {
+                const c = input.charCodeAt(i);
+                if(c >= 65 && c <= 90) {
+                    decrypted += String.fromCharCode(((c - 65 - shift + 26) % 26) + 65);
+                } else if (c >= 97 && c <= 122) {
+                    decrypted += String.fromCharCode(((c - 97 - shift + 26) % 26) + 97);
+                } else {
+                    decrypted += String.fromCharCode(c);
+                }
+            }
+            results.push({ shift: shift, text: decrypted, score: getScore(decrypted) });
+        }
+
+        // Sort by score descending (most likely first)
+        results.sort((a, b) => b.score - a.score);
+
+        container.innerHTML = '';
+        
+        results.forEach((res, index) => {
+            const item = document.createElement('div');
+            item.className = 'result-item';
+            // Highlight the top result
+            if(index === 0) item.style.borderLeft = "2px solid #fff";
+            
+            item.innerHTML = `
+                <div class="result-meta">
+                    <span>SHIFT -${res.shift}</span>
+                    <span class="result-score">SCORE: ${res.score.toFixed(0)}</span>
+                </div>
+                <span class="result-text" style="${index === 0 ? 'color: #fff; font-weight: bold;' : ''}">${res.text}</span>
+            `;
+            container.appendChild(item);
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div style="margin-bottom: 4rem; border-bottom: 1px solid var(--border-main); padding-bottom: 2rem;">
+    <h1 style="font-size: 4rem; margin-bottom: 0.5rem;">OPERATIONS</h1>
+    <p class="mono" style="color: var(--text-muted); max-width: 600px;">
+      // SELECT_MISSION_PROFILE<br>
+      // AUTH_LEVEL: 5<br>
+      // STATUS: READY
+    </p>
+  </div>
+
+  <div class="mission-list">
+    <div class="mission-header">
+      <div>ID</div>
+      <div>OPERATION</div>
+      <div>CLASS</div>
+      <div>REWARD</div>
+      <div>STATUS</div>
+      <div style="text-align: right;">ACTION</div>
+    </div>
+
+    {% for ch in challenges %}
+      <div class="mission-row {% if ch.solved %}solved{% endif %}">
+        <div class="col-id mono">#{{ loop.index }}</div>
+        <div class="col-title">
+          {{ ch.title }}
+          {% if ch.solved %}<i class="fa-solid fa-check-circle" style="color: var(--success); font-size: 0.8rem; margin-left: 0.5rem;"></i>{% endif %}
+        </div>
+        <div class="col-meta">
+          <span class="difficulty-badge difficulty-{{ ch.difficulty }}">{{ ch.difficulty }}</span>
+        </div>
+        <div class="col-meta mono">{{ ch.points }} PTS</div>
+        <div class="col-meta">
+          {% if ch.solved %}
+            <span class="status-indicator complete">
+              <span class="status-dot" style="background: var(--success); animation: none;"></span> COMPLETE
+            </span>
+          {% else %}
+            <span class="status-indicator pending">
+              <span class="status-dot" style="background: var(--warning);"></span> ACTIVE
+            </span>
+          {% endif %}
+        </div>
+        <div class="col-action">
+          <a href="{{ url_for('challenge', ch_id=ch.id) }}" class="btn {% if ch.solved %}btn-success{% else %}btn-primary{% endif %}" style="padding: 0.5rem 1rem; font-size: 0.7rem;">
+            {% if ch.solved %}ACCESS_LOGS{% else %}INITIALIZE{% endif %}
+          </a>
+        </div>
+      </div>
+    {% else %}
+      <div class="panel" style="text-align: center; border: none; background: transparent;">
+        <h3 style="color: var(--text-muted);">NO_ACTIVE_OPERATIONS</h3>
+        <p class="mono">System awaiting new directives.</p>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

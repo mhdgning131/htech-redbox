@@ -1,0 +1,8 @@
+{
+  "id": "hashcrack",
+  "title": "HashCracker",
+  "difficulty": "Facile",
+  "points": 100,
+"description": "Falilou a (encore) oublié son mot de passe. Heureusement, il avait noté le Hash quelque part !<br><br>Hash: <strong style=\"color: #ff3300;\">ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f</strong></br>",
+  "flag": "HTECH{password123}"
+}
